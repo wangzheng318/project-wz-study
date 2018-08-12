@@ -1,6 +1,7 @@
 package com.wz.study.rpc.framework;
 
 import com.wz.study.rpc.framework.annotation.Contract;
+import com.wz.study.rpc.framework.annotation.Implement;
 import com.wz.study.rpc.framework.registry.Register;
 import com.wz.study.rpc.framework.servicehandler.ProcessorHandler;
 
@@ -51,7 +52,7 @@ public class Exporter {
                     String className = scanPackage+"."+(subFile.getName().replace(".class",""));
                     try {
                         Class clazz = Class.forName(className);
-                        if(clazz.isAnnotationPresent(Contract.class)){
+                        if(clazz.isAnnotationPresent(Implement.class)){
                             rpcClassNameList.add(className);
                         }
                     } catch (ClassNotFoundException e) {
@@ -70,8 +71,8 @@ public class Exporter {
             for(String className:rpcClassNameList){
                 try {
                     Class c = Class.forName(className);
-                    Contract contract = (Contract)c.getAnnotation(Contract.class);
-                    String serviceName = contract.value().getName()+"#"+contract.version();
+                    Implement implement = (Implement)c.getAnnotation(Implement.class);
+                    String serviceName = implement.contract().getName()+"#"+implement.version();
                     handlerMap.put(serviceName,c.newInstance());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -99,23 +100,6 @@ public class Exporter {
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
     }
 
-//    /**
-//     * 绑定服务名称和服务对象
-//     *
-//     * @param services
-//     */
-//    public void bind(Object... services) {
-//        for (Object service : services) {
-//            Contract contract = service.getClass().getAnnotation(Contract.class);
-//            if (null != contract) {
-//                Class contractClass = contract.value();
-//                String version = contract.version();
-//                String serviceName = contractClass.getName() + "_" + version;
-//                //保存服务名称与实现类之间的映射关系
-//                handlerMap.put(serviceName, service);
-//            }
-//        }
-//    }
 
     public void publish(String scanPackage) {
         ServerSocket serverSocket = null;

@@ -28,6 +28,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
 
     @Override
     public String discover(String serviceName) {
+        String resultServerUrl = null;
         String path = ZKConfig.ZK_REGISTRY_PATH+"/"+serviceName;
         try {
             hostList = curatorFramework.getChildren().forPath(path);
@@ -40,7 +41,9 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
 
         //负载均衡机制
         LoadBalance loadBalance = new RandomBalance();
-       return loadBalance.selectHost(hostList);
+        resultServerUrl = loadBalance.selectHost(hostList);
+        System.out.printf("负载均衡：hostList={%s},selected={%s}\r\n",hostList,resultServerUrl);
+       return resultServerUrl;
     }
 
     private void registerWatcher(final String path){

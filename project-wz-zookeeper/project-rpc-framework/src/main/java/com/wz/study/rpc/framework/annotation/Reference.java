@@ -2,18 +2,19 @@ package com.wz.study.rpc.framework.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+@Target({ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Contract {
+public @interface Reference {
     /**
-     * 契约名称
-     */
-   String name();
-
-    /**
-     * 描述信息
+     * 契约
      * @return
      */
-   String description();
+    Class contract();
+
+    /**
+     * 版本号
+     * @return
+     */
+    String version();
 }

@@ -1,5 +1,6 @@
 package com.wz.study.rpc.framework.proxy;
 
+import com.wz.study.rpc.framework.annotation.Reference;
 import com.wz.study.rpc.framework.discovery.ServiceDiscovery;
 import com.wz.study.rpc.framework.discovery.impl.ServiceDiscoveryImpl;
 import com.wz.study.rpc.framework.transportation.Transport;
@@ -16,15 +17,15 @@ import java.net.Socket;
 
 public class RpcInvocationHandler implements InvocationHandler {
 
-    private Class<?> interfaceClass;
-    public RpcInvocationHandler(Class<?> interfaceClass) {
-        this.interfaceClass = interfaceClass;
+    private Reference reference;
+    public RpcInvocationHandler(Reference reference) {
+        this.reference = reference;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            String serviceName =  interfaceClass.getName()+"#1.0.0";
+            String serviceName =  reference.contract().getName()+"#"+reference.version();
             RpcRequest rpcRequest = new RpcRequest(serviceName, method.getName(), method.getParameterTypes(), args);
             ServiceDiscovery discovery = new ServiceDiscoveryImpl();
             String discover = discovery.discover(serviceName);

@@ -14,7 +14,7 @@ public class RegisterCenterImpl implements Register {
     {
         curatorFramework = CuratorFrameworkFactory.builder()
                 .connectString(ZKConfig.ZK_CONNECTION_STRING)
-                .sessionTimeoutMs(4000)
+                .sessionTimeoutMs(600000)
                 .retryPolicy(new ExponentialBackoffRetry(1000, 3))
                 .build();
         curatorFramework.start();
@@ -37,8 +37,7 @@ public class RegisterCenterImpl implements Register {
                     .create()
                     .withMode(CreateMode.EPHEMERAL)
                     .forPath(addressPath, "0".getBytes());
-            System.out.println("服务注册成功：" + rsNode);
-
+            System.out.printf("服务注册成功,{%s} -> {%s}\r\n",servicePath,addressPath);
         } catch (Exception e) {
             e.printStackTrace();
         }

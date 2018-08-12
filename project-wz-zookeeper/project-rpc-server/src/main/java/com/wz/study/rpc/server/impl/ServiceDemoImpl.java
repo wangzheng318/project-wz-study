@@ -1,12 +1,13 @@
 package com.wz.study.rpc.server.impl;
 
 import com.wz.study.rpc.framework.annotation.Contract;
+import com.wz.study.rpc.framework.annotation.Implement;
 import com.wz.study.rpc.service.ServiceDemo;
 
 /**
  * 业务处理demo
  */
-@Contract(value = ServiceDemo.class,version = "1.0.0")
+@Implement(contract = ServiceDemo.class,version = "1.0.0")
 public class ServiceDemoImpl implements ServiceDemo {
     @Override
     public String echo(String message) {
