@@ -3,25 +3,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>wz.study</artifactId>
+        <artifactId>wz.zookeeper</artifactId>
         <groupId>com.wz.study</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wz.zookeeper</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>project-rpc-client</artifactId>
 
-    <name>wz.zookeeper</name>
+    <name>project-rpc-client</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
-    <modules>
-        <module>project-wz-distributedlock</module>
-        <module>project-rpc-server</module>
-        <module>project-rpc-client</module>
-        <module>project-rpc-api</module>
-        <module>project-rpc-framework</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,25 +23,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wz.study</groupId>
+            <artifactId>project-rpc-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wz.study</groupId>
+            <artifactId>project-rpc-framework</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
