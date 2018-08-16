@@ -1,10 +1,16 @@
 package com.wz.study.netty.demo;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import java.util.logging.Handler;
 
@@ -22,20 +28,34 @@ public class Client {
     public void sendMsg(){
         EventLoopGroup group = new NioEventLoopGroup();
         try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(group)
+            Bootstrap b = new Bootstrap();
+
+            b.group(group)
                     .channel(NioSocketChannel.class)
+                    .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
+
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new ClientHandler());
+
+                            //处理的拆包、粘包的解、编码器
+                            pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4,0,4));
+                            pipeline.addLast("frameEncoder",new LengthFieldPrepender(4));
+
+                            //处理序列化的解、编码器（JDK默认的序列化）
+                            pipeline.addLast("encoder",new ObjectEncoder());
+                            pipeline.addLast("decoder",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
+
+                            //自己的业务逻辑
+                            pipeline.addLast("handler",new ClientHandler());
                         }
-                    })
-                    .option(ChannelOption.TCP_NODELAY,true);
-            ChannelFuture future = bootstrap.connect(this.hostname, this.port).sync();
-            future.channel().writeAndFlush("hello,server");
-            future.channel().closeFuture().sync();
+
+                    });
+
+            ChannelFuture f = b.connect("localhost",8088).sync();
+            f.channel().writeAndFlush("Hello").sync();
+            f.channel().closeFuture().sync();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,6 +66,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        new Client("127.0.0.1",8080).sendMsg();
+        new Client("127.0.0.1",8088).sendMsg();
     }
 }

@@ -39,7 +39,7 @@ public class RpcRegistryHandler extends ChannelInboundHandlerAdapter {
             method.setAccessible(true);
             result = method.invoke(object);
         }
-        ctx.writeAndFlush(request);
+        ctx.writeAndFlush(result);
         ctx.close();
        // ctx.fireChannelRead(msg);
     }
